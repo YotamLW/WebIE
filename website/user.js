@@ -30,6 +30,13 @@ canvas.style.left = "0"
 let w = canvas.width // screen width 
 let h = canvas.height // screen height 
 
+function refreshScreen () {
+    canvas.width = window.innerWidth
+    canvas.height = window.innerHeight
+    w = canvas.width
+    h = canvas.height
+}
+
 
 // declaration of the user class, which affects positioning of elements on the canvas 
 class User {
@@ -39,9 +46,9 @@ class User {
     x = 0
     y = 0
 
-    sf = 20 // base size factor 
+    sf = 20 // base size factor (temporary fixed value - will later be dependent on width and height of screen) 
     zoom = 0 // zoom level 
-    s = 20 // size factor adjusted to zoom 
+    s = this.sf * exp(this.zoom) // size factor adjusted to zoom 
     zoomIncrement = 0.2
     maxZoom = 2
     zoomType = "mouse" // mouse-relative or screen-centre-relative 
@@ -74,7 +81,7 @@ class User {
         c.restore()
     }
 
-    refresh () {
+    reset () {
         this.x = 0
         this.y = 0
         this.zoom = 0

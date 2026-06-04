@@ -2,11 +2,33 @@
 
 <canvas id="screen"></canvas>
 
+<script src="../../macros.js"></script>
 <script src="../../user.js"></script>
 <script src="./code.js"></script>
 
 <script>
 
+let currentUser = new User("Bob")
+let testComponent = new Resistor()
+let paused = true
+function step () {loop()}
 
+window.requestAnimationFrame(loop)
+function loop () {
+    pTime = cTime
+    cTime = Date.now()
+    dt = (cTime - pTime) / 1000 // time difference in seconds 
+    refreshScreen()
+    draw()
+    if (!paused) {window.requestAnimationFrame(loop)}
+}
+
+function draw () {
+    c.clearRect(0, 0, w, h)
+    c.fillStyle = "#aaaaaa"
+    c.fillRect(0, 0, w, h)
+    testComponent.setDrawParameters()
+    currentUser.drawSomething(testComponent, w/2, h/2)
+}
 
 </script>
