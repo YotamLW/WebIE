@@ -89,3 +89,5 @@ class User {
     }
 
 }
+
+let currentUser = new User("Bob")

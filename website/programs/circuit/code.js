@@ -22,6 +22,49 @@ let pTime // live time at of previous iteration
 let dt  // difference in time (unfortunately not infinitesimal) 
 
 
+//
+// Nodal Analysis 
+//
+
+class Connection {
+    complementaryConnection
+    constructor (node, component, direction) {
+        this.node = node
+        this.component = component
+        this.direction = direction
+    }
+}
+
+class Node { // nodes are basically wire connections that represent constant voltage 
+
+    voltage
+    connections = [] // connections will be of the Connection class where node is the node that this one is connected to (the object itself), component is the component object, direction +1 is if the component is facing out (-1 if facing in), and complementaryConnection is the connection the other node has with this one (going in the opposite direction) 
+
+    connectTo (node, component = "none", direction = 1) { // this function handles new connections 
+        if (component == "none") {
+            for (let i in node.connections) {
+                node.connections[i].complementaryConnection.node = this // sets connection node of nodes connected to other node to point to this node instead 
+                this.connections.push(node.connections[i]) // adds other node's connection to this node 
+            }
+            delete node.connections
+        }
+        else if (this.connections.indexOf(node) > -1) {console.log("Connection already exists")}
+        else {
+            let connectionOut = new Connection(node, component, direction)
+            let connectionIn = new Connection(this, component, -direction)
+            connectionOut.complementaryConnection = connectionIn
+            connectionIn.complementaryConnection = connectionOut
+            this.connections.push(connectionOut)
+            node.connections.push(connectionIn)
+        }
+    }
+
+    analysis () {
+
+    }
+
+}
+
 
 //
 // Components 
@@ -29,9 +72,11 @@ let dt  // difference in time (unfortunately not infinitesimal)
 
 class Component {
 
+    name = "Undefined"
     x = 0
     y = 0
     s = currentUser.s
+    outputs = []
 
     fillStyle = "magenta"
     strokeStyle = "black"
@@ -56,26 +101,55 @@ class Component {
 
 }
 
+
 class Passive_Component extends Component {
 
-    input
+    potentialDifference
+
+}
+
+class Ground extends Component {
+
+    name = "Ground"
+    outputVoltage = 0
+
+    analysis (inp = "output") {
+        if (inp == "output") {for (let i in this.outputs) {outputs[i].analysis(this.outputVoltage)}}
+        else {return 0}
+    }
 
 }
 
 class DC_Voltage_Source extends Passive_Component {
 
     name = "DC Voltage source"
-    pd = 10
+    outputVoltage
+
+    constructor (pd) {
+        super()
+        this.potentialDifference = pd
+    }
+
+    analysis (inputVoltage) {
+        this.outputVoltage = inputVoltage + this.potentialDifference
+        for (let i in this.outputs) {outputs[i].analysis(this.outputVoltage)}
+    }
 
 }
 
 class Resistor extends Passive_Component {
 
     name = "Resistor"
-    resistance = 1
+    resistance
+
+    constructor (resistance) {
+        super()
+        this.resistance = resistance
+    }
+
+    analysis (inputVoltage) {}
 
     fillStyle = "white"
-
     draw () {
         c.beginPath()
         c.moveTo(4 * -this.s, -this.s)
@@ -88,3 +162,8 @@ class Resistor extends Passive_Component {
     }
 
 }
+
+let r1 = new Resistor(2)
+let node1 = new Node()
+let node2 = new Node()
+node1.voltage = 0
