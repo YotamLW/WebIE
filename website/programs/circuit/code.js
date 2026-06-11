@@ -130,11 +130,6 @@ class DC_Voltage_Source extends Passive_Component {
         this.potentialDifference = pd
     }
 
-    analysis (inputVoltage) {
-        this.outputVoltage = inputVoltage + this.potentialDifference
-        for (let i in this.outputs) {outputs[i].analysis(this.outputVoltage)}
-    }
-
 }
 
 class Resistor extends Passive_Component {
@@ -147,7 +142,7 @@ class Resistor extends Passive_Component {
         this.resistance = resistance
     }
 
-    analysis (inputVoltage) {}
+    voltageOut (voltageIn) {return 0}
 
     fillStyle = "white"
     draw () {
