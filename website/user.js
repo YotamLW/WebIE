@@ -25,6 +25,8 @@ canvas.height = window.innerHeight
 canvas.style.position = "absolute"
 canvas.style.top = "0"
 canvas.style.left = "0"
+canvas.style.zIndex = "0"
+canvas.style.pointerEvents = "none"
 
 // UI global variables 
 let w = canvas.width // screen width 

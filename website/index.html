@@ -1,10 +1,40 @@
 <!DOCTYPE html>
 
-<title>WebIE</title>
+<head>
+    <title>WebIE</title>
+    <link rel="icon" type="image/x-icon" sizes="16x16" href="favicon.ico?v=1">
+</head>
 
-<h1>WebIE</h1>
-<p>This is WebIE (Website for Independent Education)</p>
-<p>Go to <a href="./resources/navigation.html">resources</a></p>
-<p>Go to <a href="./programs/navigation.html">programs</a></p>
-<p><b>Disclaimer</b> - at this point in time only I am creating content on this website. I have started this project to try and teach content I have learned and am learning in the way I currently understand it, so while I will try to continually improve the content, some of it may be poorly explained or inaccurate. If you have any constructive feedback or have found a discrepancy on the content or programs you can email me at <u>yotamlw@gmail.com</u>. You can also email me if you would like to discuss why content has been explained in a certain way.</p>
-<p>Last update - 16/06/2026 (check <a href="https://github.com/YotamLW/WebIE">github</a> for more details)</p>
+<body>
+    <canvas id="screen"></canvas>
+    <script src="./macros.js"></script>
+    <script src="./user.js"></script>
+    <script src="./mathjax/macros.js"></script>
+    <script src="./mathjax/tex-chtml.js"></script>
+    <div id="pageContent" z-index="1"><p></p></div>
+</body>
+
+<script>
+
+let page = document.getElementById("pageContent")
+let historyStack = []
+
+loadPage("main")
+
+async function loadPage (path, history = true) {
+    let file = await fetch(`./pages/${path}.txt`)
+    page.innerHTML = await file.text()
+    MathJax.typesetPromise()
+    if (history) {historyStack.push(path)}
+}
+
+window.addEventListener("popstate", (event) => {
+    console.log("e")
+    if (historyStack/length > 1) {
+        event.preventDefault()
+        historyStack.pop()
+        loadPage(historyStack.pop())
+    }
+})
+
+</script>
