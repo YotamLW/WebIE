@@ -1,3 +1,22 @@
+<!-- This code is the main display of the website where content is loaded onto 
+
+Copyright (C) 2026 Yotam Limor-Waisberg 
+For more information visit <https://www.github.com/YotamLW/WebIE> 
+
+This program is free software: you can redistribute it and/or modify 
+it under the terms of the GNU Affero General Public License as 
+published by the Free Software Foundation, either version 3 of the 
+License, or (at your option) any later version. 
+
+This program is distributed in the hope that it will be useful, 
+but WITHOUT ANY WARRANTY; without even the implied warranty of 
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
+GNU Affero General Public License for more details. 
+
+You should have received a copy of the GNU Affero General Public License 
+along with this program.  If not, see <https://www.gnu.org/licenses/>. 
+-->
+
 <!DOCTYPE html>
 
 <head>
@@ -9,6 +28,7 @@
     <canvas id="screen"></canvas>
     <script src="./macros.js"></script>
     <script src="./user.js"></script>
+    <script src="./pages.js"></script>
     <script src="./mathjax/macros.js"></script>
     <script src="./mathjax/tex-chtml.js"></script>
     <div id="pageContent" z-index="1"><p></p></div>
@@ -17,23 +37,45 @@
 <script>
 
 let page = document.getElementById("pageContent")
-let historyStack = []
 
-loadPage("main")
+loadPage("main", false)
 
-async function loadPage (path, history = true) {
-    let file = await fetch(`./pages/${path}.txt`)
-    page.innerHTML = await file.text()
-    MathJax.typesetPromise()
-    if (history) {historyStack.push(path)}
+// this function handles the fetching of content and / or code files to load 
+async function loadPage (path, pushState = true) {
+
+    // clears content and code tags 
+    page.innerHTML = ""
+    document.getElementById("pageAnimations")?.remove()
+    refreshScreen()
+
+    if (textFiles.includes(path)) { // loads content if it exists 
+        let textResponse = await fetch(`./pages/${path}.txt`)
+        page.innerHTML = await textResponse.text()
+        MathJax.typesetPromise() // renders any maths formulas 
+        if (pushState) {updateHistory(path)}
+    }
+
+    if (codeFiles.includes(path)) { // loads code if it exists 
+        let script = document.createElement("script")
+        script.src = `./pages/${path}.js`
+        script.id = "pageAnimations"
+        document.body.appendChild(script)
+        script.onload = () => {paused = false; loop()} // initiates animation loop 
+        if (!textFiles.includes(path) && pushState) {updateHistory(path)}
+    }
+
 }
 
+// updates page using hashes to allow for back button usage 
+function updateHistory (path) {
+    if (path == "main") {history.pushState({path}, "", "")} 
+    else {history.pushState({path}, "", `#${path}`)}
+}
+
+// loads page from history when using back / forward buttons 
 window.addEventListener("popstate", (event) => {
-    console.log("e")
-    if (historyStack/length > 1) {
-        event.preventDefault()
-        historyStack.pop()
-        loadPage(historyStack.pop())
+    if (event.state?.path) {
+        loadPage(event.state.path, false)
     }
 })
 

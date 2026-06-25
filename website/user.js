@@ -31,12 +31,22 @@ canvas.style.pointerEvents = "none"
 // UI global variables 
 let w = canvas.width // screen width 
 let h = canvas.height // screen height 
+let paused = true
 
 function refreshScreen () {
+    paused = true
     canvas.width = window.innerWidth
     canvas.height = window.innerHeight
     w = canvas.width
     h = canvas.height
+    c.clearRect(0, 0, w, h)
+}
+
+function loop () {
+    if (paused) return
+    c.clearRect(0, 0, w, h)
+    c.fillRect(w-10, h-10, 10, 10)
+    window.requestAnimationFrame(loop)
 }
 
 
