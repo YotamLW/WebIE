@@ -38,7 +38,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 
 let page = document.getElementById("pageContent")
 
-loadPage("main", false)
+loadPage("main")
 
 // this function handles the fetching of content and / or code files to load 
 async function loadPage (path, pushState = true) {
@@ -68,7 +68,7 @@ async function loadPage (path, pushState = true) {
 
 // updates page using hashes to allow for back button usage 
 function updateHistory (path) {
-    if (path == "main") {history.pushState({path}, "", "")} 
+    if (path == "main") {history.pushState({path}, "")} 
     else {history.pushState({path}, "", `#${path}`)}
 }
 
