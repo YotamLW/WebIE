@@ -1,82 +1,18 @@
-<!-- This code is the main display of the website where content is loaded onto 
-
-Copyright (C) 2026 Yotam Limor-Waisberg 
-For more information visit <https://www.github.com/YotamLW/WebIE> 
-
-This program is free software: you can redistribute it and/or modify 
-it under the terms of the GNU Affero General Public License as 
-published by the Free Software Foundation, either version 3 of the 
-License, or (at your option) any later version. 
-
-This program is distributed in the hope that it will be useful, 
-but WITHOUT ANY WARRANTY; without even the implied warranty of 
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the 
-GNU Affero General Public License for more details. 
-
-You should have received a copy of the GNU Affero General Public License 
-along with this program.  If not, see <https://www.gnu.org/licenses/>. 
--->
-
 <!DOCTYPE html>
 
 <head>
-    <title>WebIE</title>
-    <link rel="icon" type="image/x-icon" sizes="16x16" href="favicon.ico?v=1">
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="description" content="Website for Independent Education">
+<title>WebIE</title>
+<link rel="icon" type="image/x-icon" sizes="16x16" href="./favicon.ico?v=2">
+<link rel="stylesheet" href="./style.css">
 </head>
 
-<body>
-    <canvas id="screen"></canvas>
-    <script src="./macros.js"></script>
-    <script src="./user.js"></script>
-    <script src="./pages.js"></script>
-    <script src="./mathjax/macros.js"></script>
-    <script src="./mathjax/tex-chtml.js"></script>
-    <div id="pageContent" z-index="1"><p></p></div>
-</body>
+<h1>WebIE</h1>
+<p>This is WebIE (Website for Independent Education)</p>
 
-<script>
+<p>Go to <a href="./resources/navigation.html">resources</a></p>
 
-let page = document.getElementById("pageContent")
-
-loadPage("main")
-
-// this function handles the fetching of content and / or code files to load 
-async function loadPage (path, pushState = true) {
-
-    // clears content and code tags 
-    page.innerHTML = ""
-    document.getElementById("pageAnimations")?.remove()
-    refreshScreen()
-
-    if (textFiles.includes(path)) { // loads content if it exists 
-        let textResponse = await fetch(`./pages/${path}.txt`)
-        page.innerHTML = await textResponse.text()
-        MathJax.typesetPromise() // renders any maths formulas 
-        if (pushState) {updateHistory(path)}
-    }
-
-    if (codeFiles.includes(path)) { // loads code if it exists 
-        let script = document.createElement("script")
-        script.src = `./pages/${path}.js`
-        script.id = "pageAnimations"
-        document.body.appendChild(script)
-        script.onload = () => {paused = false; loop()} // initiates animation loop 
-        if (!textFiles.includes(path) && pushState) {updateHistory(path)}
-    }
-
-}
-
-// updates page using hashes to allow for back button usage 
-function updateHistory (path) {
-    if (path == "main") {history.pushState({path}, "")} 
-    else {history.pushState({path}, "", `#${path}`)}
-}
-
-// loads page from history when using back / forward buttons 
-window.addEventListener("popstate", (event) => {
-    if (event.state?.path) {
-        loadPage(event.state.path, false)
-    }
-})
-
-</script>
+<p><b>Disclaimer</b> - at this point in time only I am creating content on this website. I have started this project to try and teach content I have learned and am learning in the way I currently understand it, so while I will try to continually improve the content, some of it may be poorly explained or inaccurate. If you have any constructive feedback or have found a discrepancy on the content or programs you can email me at <u>yotamlw@gmail.com</u>. You can also email me if you would like to discuss why content has been explained in a certain way.</p>
+<p>Last update - 27/06/2026 (check <a href="https://github.com/YotamLW/WebIE">github</a> for more details)</p>

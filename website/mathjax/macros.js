@@ -1,5 +1,4 @@
 MathJax = {
-    assistive : {speech : false},
     tex: {
         inlineMath : [['$', '$']],
         macros : {

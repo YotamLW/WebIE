@@ -1,5 +1,0 @@
-<h1>Resources</h1>
-<p>Currently this directory is where I will create note-like explanations of things I have learned. In the future I plan to convert them into more structured and interdependent pages suitable for independent learning.</p>
-
-<a href="javascript:loadPage('resources/fundamentals_of_science')">Fundamentals of Science</a><br>
-<a href="javascript:loadPage('resources/computer_science')">Fundamentals of Computer Science</a><br>
